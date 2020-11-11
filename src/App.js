@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
   dashboard: {
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'start',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
       alignItems: 'center'
