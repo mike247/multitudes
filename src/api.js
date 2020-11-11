@@ -3,7 +3,7 @@ import { retry } from '@octokit/plugin-retry'
 import { throttling } from '@octokit/plugin-throttling'
 
 import store from './redux/store'
-import { setOpenPrs } from './redux/actions'
+import { setOpenPrs, setReactCorePrs, setAllPrs } from './redux/actions'
 
 const MyOctokit = Octokit.plugin(retry, throttling)
 
@@ -50,9 +50,22 @@ const getOpenPrs = () => {
 }
 
 const getReactCoreTeamPrs = () => {
-  return ''
+  myOctokit.search.issuesAndPullRequests({
+    q: 'repo:facebook/react+is:pr+label:"React Core Team"'
+  }).then(({ data }) => {
+    store.dispatch(setReactCorePrs(data.total_count))
+  })
+}
+
+const getAllPrs = () => {
+  myOctokit.search.issuesAndPullRequests({
+    q: 'repo:facebook/react+is:pr+-label:"React Core Team"'
+  }).then(({ data }) => {
+    store.dispatch(setAllPrs(data.total_count))
+  })
 }
 export {
   getOpenPrs,
-  getReactCoreTeamPrs
+  getReactCoreTeamPrs,
+  getAllPrs
 }
