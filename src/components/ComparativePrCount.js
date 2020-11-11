@@ -1,4 +1,4 @@
-/* disable multiline-ternary */
+/* disable multiline-ternary */ // StandardJS seems to have a circular error on this rule, will disable pending further investigation
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getReactCoreTeamPrs, getAllPrs } from '../api'
