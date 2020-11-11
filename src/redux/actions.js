@@ -1,9 +1,10 @@
 import { SET_OPEN_PRS, SET_REACT_CORE_PRS, SET_ALL_PRS } from './actionTypes'
 
-export const setOpenPrs = value => ({
+export const setOpenPrs = ({ value, prs }) => ({
   type: SET_OPEN_PRS,
   payload: {
-    value
+    value,
+    prs
   }
 })
 

@@ -23,7 +23,7 @@ const myOctokit = new MyOctokit({
         `Request quota exhausted for request ${options.method} ${options.url}`
       )
 
-      if (options.request.retryCount === 0) {
+      if (options.request.retryCount !== 0) {
         // only retries once
         myOctokit.log.info(`Retrying after ${retryAfter} seconds!`)
         return true
@@ -41,12 +41,20 @@ const myOctokit = new MyOctokit({
   }
 })
 
-const getOpenPrs = () => {
-  myOctokit.search.issuesAndPullRequests({
-    q: 'repo:facebook/react+is:pr+state:open'
-  }).then(({ data }) => {
-    store.dispatch(setOpenPrs(data.total_count))
-  })
+const getAllOpenPrs = async () => {
+  let page = 1
+  let fetchedPrs = store.getState().prs
+  let openPrs = store.getState().openPrs
+  while (fetchedPrs.length < openPrs || openPrs === null) {
+    const { data } = await myOctokit.search.issuesAndPullRequests({
+      q: 'repo:facebook/react+is:pr+state:open',
+      page
+    })
+    store.dispatch(setOpenPrs({ value: data.total_count, prs: data.items }))
+    fetchedPrs = store.getState().prs
+    openPrs = store.getState().openPrs
+    page += 1
+  }
 }
 
 const getReactCoreTeamPrs = () => {
@@ -65,7 +73,7 @@ const getAllPrs = () => {
   })
 }
 export {
-  getOpenPrs,
+  getAllOpenPrs,
   getReactCoreTeamPrs,
   getAllPrs
 }
